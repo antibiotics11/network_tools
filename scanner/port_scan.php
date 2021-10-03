@@ -53,10 +53,21 @@
 			return $scan_result;
 		}
 		
-		public function full_scan($priority) {
-			$protocol = $priority;
-			for ($i = 0; $i <= 65535; $i++) {
-				
+		public function full_scan() {
+			$protocol_list = array("tcp", "udp");
+			for ($i = 0; $i < count($protocol_list); $i++) {
+				for ($j = 1; $j <= 65536; $j++) {
+					$socket_result = @fsockopen($protocol_list[$i]."://".$this->target_address, $j, $errno, $errstr, 2);
+					if (is_resource($socket_result)) {
+						fclose($socket_result);
+						$scan_result[$protocol_list[$i]][$j] = true;
+					} else {
+						fclose($socket_result);
+						$scan_result[$protocol_list[$i]][$j] = false;
+					}
+				}
 			}
+			
+			return $scan_result;
 		}
 	}
