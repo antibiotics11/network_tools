@@ -4,12 +4,14 @@
 		public $localhost_address;
 		public $target_address;
 		
-		public function return_localhost() {
-			return $this->localhost_address;
-		}
-		
-		public function return_target() {
-			return $this->target_address;
+		public function is_ipv4($address) {
+			$address = explode(".", $address);
+			for ($i = 0; $i < 4; $i++) {
+				if (!is_numeric($address[$i]) || $address[$i] > 255) {
+					return false;
+				}
+			}
+			return true;
 		}
 		
 		public function check_target_alive() {
@@ -28,46 +30,30 @@
 		public $localhost_address;
 		public $target_address;
 		
-		private function get_protocol($protocol) {
-			if (strtolower($protocol) == "tcp" || $protocol == 1) {
-				return "tcp";
-			} else {
-				return "udp";
-			}
-		}
-		
-		public function port_scan(array $port_list, $protocol) {
+		public function tcp_port_scan(array $port_list) {
 			foreach ($port_list as $port) {
-				$socket_result = @fsockopen($this->get_protocol($protocol)."://".$this->target_address, $port, $errno, $errstr, 2);
+				$socket_result = @fsockopen("tcp://".$this->target_address, $port, $errno, $errstr, 2);
 				$port_index = array_search($port, $port_list);
 				
 				if (is_resource($socket_result)) {
 					fclose($socket_result);
 					$scan_result[$port_index] = true;
-				} else {
-					fclose($socket_result);
-					$scan_result[$port_index] = false;
-				}
+				} 
 			}
 			
 			return $scan_result;
 		}
 		
-		public function full_scan() {
-			$protocol_list = array("tcp", "udp");
-			for ($i = 0; $i < count($protocol_list); $i++) {
-				for ($j = 1; $j <= 65536; $j++) {
-					$socket_result = @fsockopen($protocol_list[$i]."://".$this->target_address, $j, $errno, $errstr, 2);
-					if (is_resource($socket_result)) {
-						fclose($socket_result);
-						$scan_result[$protocol_list[$i]][$j] = true;
-					} else {
-						fclose($socket_result);
-						$scan_result[$protocol_list[$i]][$j] = false;
-					}
-				}
+		public function udp_port_scan(array $port_list) {
+			
+		}
+		
+		public function print_scan_result(array $scan_result) {
+			foreach ($scan_result as $port) {
+				$port_index = array_search($port, $scan_result);
+				
 			}
 			
-			return $scan_result;
+			return;
 		}
 	}
