@@ -31,7 +31,7 @@
 			exit();
 		}
 		
-		if ($host->check_target_alive($host->target_address)) {
+		if ($host->target_alive($host->target_address)) {
 			$input_options = explode(",", $_GET["o"]);
 			
 			for ($i = 0; $i < count($input_options); $i++) {
