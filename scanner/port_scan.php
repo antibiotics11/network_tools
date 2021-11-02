@@ -6,15 +6,38 @@
 		
 		public function is_ipv4($address) {
 			$address = explode(".", $address);
-			for ($i = 0; $i < 4; $i++) {
-				if (!is_numeric($address[$i]) || $address[$i] > 255) {
+			for ($i = 0; $i < count($address); $i++) {
+				if (!is_numeric($address[$i]) || (int)$address[$i] > 255 || (int)$address[$i] < 0) {
+					return false;
+				}
+				if ($i >= 4) {
 					return false;
 				}
 			}
 			return true;
 		}
 		
-		public function check_target_alive() {
+		public function is_private_ipv4($address) {
+			if (!$this->is_ipv4($address)) {
+				return false;
+			}
+			
+			$address = explode(".", $address);
+			// private address range 10.0.0.0/8
+			if ((int)$address[0] == 10) {
+				return true;
+			// private address range 192.168.0.0/16
+			} else if ((int)$address[0] == 192 && (int)$address[1] == 168) {
+				return true;
+			// private address range 172.16.0.0/12
+			} else if ((int)$address[0] == 172 && (int)$address[1] >= 16 && (int)$address[1] <= 31) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		
+		public function target_alive() {
 			$socket_result = @fsockopen("udp://".$this->target_address, 13, $errno, $errstr, 5);
 			if ($socket_result) { 
 				fclose($socket_result);
