@@ -77,14 +77,14 @@
 		* $type(0): full scan, $type(1): fast scan 
 		*/ 
 		public function tcp_scan($type) {
-			$port_lists = $this->tcp_ports_list;
+			$ports_list = $this->tcp_ports_list;
 			if ($type == 1) {
-				$port_lists = $this->common_tcp_ports_list;
+				$ports_list = $this->common_tcp_ports_list;
 			} 
 			
-			foreach ($port_lists as $port) {
+			foreach ($ports_list as $port) {
 				$socket_result = @fsockopen("tcp://".$this->target_address, $port, $errno, $errstr, 2);
-				$port_index = array_search($port, $port_lists);
+				$port_index = array_search($port, $ports_list);
 				
 				if (is_resource($socket_result)) {
 					fclose($socket_result);
