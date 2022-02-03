@@ -22,11 +22,7 @@
 		public function __construct($localhost_address, $target_address) {
 			$this->localhost_address = $localhost_address;
 			$this->target_address = $target_address;
-			
-			for ($i = 0; $i <= 65535; $i++) {
-				$this->tcp_ports_list[$i] = $i;
-				$this->udp_ports_list[$i] = $i;
-			}
+			$this->tcp_ports_list = range(1, 65535);
 		}
 		
 		/* Returns true if the target address format is ipv4, otherwise false. */
