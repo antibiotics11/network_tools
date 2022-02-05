@@ -72,7 +72,7 @@
 		/* Runs tcp port scan. Returns scan results as an array. 
 		* $type(0): full scan, $type(1): fast scan 
 		*/ 
-		public function tcp_scan($type) {
+		public function tcp_scan(int $type = 1) {
 			$ports_list = $this->tcp_ports_list;
 			if ($type == 1) {
 				$ports_list = $this->common_tcp_ports_list;
